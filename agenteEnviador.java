@@ -6,7 +6,7 @@ import jade.lang.acl.ACLMessage;
 import jade.util.Logger;
 
 public class agenteEnviador extends Agent{
-
+    private byte[] fileContent;
     private String fileName;
     private Logger Log = Logger.getMyLogger(getClass().getName());
 
@@ -24,6 +24,23 @@ public class agenteEnviador extends Agent{
 	    doDelete();
 	} 
 		
+		try {
+	      FileInputStream fstream = new FileInputStream(fileName);
+	      DataInputStream in = new DataInputStream(fstream);
+	      BufferedReader br = new BufferedReader(new InputStreamReader(in));
+	      String str;
+	      StringBuffer strContent = new StringBuffer(""); 
+		while ((str = br.readLine()) != null) {
+		fileContent = str.getBytes("UTF-16LE");
+		strContent.append(str);	     
+		   System.out.println(str);
+	      }
+	      in.close();
+	    } catch (Exception e) {
+	      System.err.println(e);
+	    }
+			
+	  }
     }
     private class SendFileBehaviour extends Behaviour{
 	
@@ -53,7 +70,9 @@ public class agenteEnviador extends Agent{
 	    }catch(FIPAException fe){
 		fe.printStackTrace();
 	    }
-
+		msg.setByteSequenceContent(fileContent);
+		msg.addUserDefinedParameter("file-name", fileName);
+		send(msg);
 	    
 	}// fin de metodo action
 	
