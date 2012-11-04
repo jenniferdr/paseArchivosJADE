@@ -77,7 +77,9 @@ public class agenteReceptor extends Agent {
 			f.createNewFile();
 			System.out.println("cree archivo ");
 		    }
-		    FileOutputStream out = new FileOutputStream(f);
+		    //FileOutputStream out = new FileOutputStream(f);
+			FileWriter fw = new FileWriter(f.getAbsoluteFile());			
+			BufferedWriter out = new BufferedWriter(fw);			
 			copyFile = new String(fileContent);		    
 			out.write(copyFile);
 		}catch(Exception e ){
