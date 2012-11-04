@@ -12,10 +12,13 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.util.Logger;
 
-	public class agenteEnviador extends Agent{
-	    private byte[] fileContent;
-	    private String fileName;
-	    private Logger Log = Logger.getMyLogger(getClass().getName());
+public class agenteEnviador extends Agent{
+
+    private byte[] fileContent;
+    private String fileName;
+    private Logger Log = Logger.getMyLogger(getClass().getName());
+    
+
     protected void setup(){
 	    
 	// Obtener el nombre del archivo
@@ -23,27 +26,29 @@ import jade.util.Logger;
 	if(args!=null && args.length>0){
 	    this.fileName= (String) args[0];
 	    addBehaviour(new SendFileBehaviour(this));
-	    System.out.println(fileName);
+	    System.out.println("Nombre del archivo: "+fileName);
 	}else{
 	    System.out.println("No se especifico el nombre del archivo");
 	    doDelete();
 	} 
     }
-    private class SendFileBehaviour extends Behaviour{
-	
-		public SendFileBehaviour(Agent a){
-		    super(a);
-		}
 
-		public boolean done(){
-		    return true;
-		}
+    private class SendFileBehaviour extends Behaviour{
+	private boolean finished;
+	
+	public SendFileBehaviour(Agent a){
+	    super(a);
+	    finished=false;
+	}
+
+	public boolean done(){
+	    return finished;
+	}
 
 	public void action(){
-	    // Colocar aqui lo de buscar el archivo this.fileName
-	  ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-			  
-	  try {
+	    
+	    // Cargar el contenido del archivo en el buffer strContent
+	    try {
 		FileInputStream fstream = new FileInputStream(fileName);
 		DataInputStream in = new DataInputStream(fstream);
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -52,34 +57,45 @@ import jade.util.Logger;
 		while ((str = br.readLine()) != null) {
 		    fileContent = str.getBytes("UTF-16LE");
 		    strContent.append(str);	     
-		    System.out.println(str);
+		    //System.out.println(str);
 		}
 		in.close();
 	    } catch (Exception e) {
 		System.err.println(e);
 	    }
 
-	    // Buscar un agente disponible a quien enviar el contenido
+	    /* Buscar agentes registrados para recibir archivos.
+	       Los ID de los agentes se guardan en receiverAgents */
 	    DFAgentDescription temp = new DFAgentDescription();
 	    ServiceDescription sd = new ServiceDescription();
 	    sd.setType("agenteReceptor");
-	    template.addServices(sd);
+	    temp.addServices(sd);
+	    AID receiverAgents[]= new AID[0];
 	    try {
 		DFAgentDescription[] result = DFService.search(myAgent, temp);
 		// Guardar los nombres de los agentes
-		AID receiverAgents[]= new AID[result.length];
+		receiverAgents= new AID[result.length];
 		for (int i = 0; i < result.length; ++i) {
 		    receiverAgents[i] = result[i].getName();
+		    System.out.println(receiverAgents[i].getName());
 		}
 	    }catch(FIPAException fe){
 		fe.printStackTrace();
 	    }
+
+	    // Crear el mensaje para enviarlo a los agentes registrados
+	    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+
 	    msg.setByteSequenceContent(fileContent);
 	    msg.addUserDefinedParameter("file-name", fileName);
+	    for(int i=0; i< receiverAgents.length ;i++){
+		msg.addReceiver(receiverAgents[i]);
+	    }
 	    send(msg);
-	    
+	    finished= true;
+	    myAgent.doDelete();
 	}// fin de metodo action
 	
-	    }// FIN de clase privada SendFileBehaviour 
+    }// FIN de clase privada SendFileBehaviour 
 
-	}
+}

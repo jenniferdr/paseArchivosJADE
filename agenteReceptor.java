@@ -114,7 +114,7 @@ public class agenteReceptor extends Agent {
 	// Registration with the DF 
 	DFAgentDescription dfd = new DFAgentDescription();
 	ServiceDescription sd = new ServiceDescription();   
-	sd.setType("PingAgent"); 
+	sd.setType("agenteReceptor"); 
 	sd.setName(getName());
 	sd.setOwnership("TILAB");
 	dfd.setName(getAID());
