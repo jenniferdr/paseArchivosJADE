@@ -1,9 +1,16 @@
-	package paseArchivo.agenteEnviador;
 
-	import jade.core.*;
-	import jade.core.behaviours.*;
-	import jade.lang.acl.ACLMessage;
-	import jade.util.Logger;
+package examples.AgenteEnviador;
+
+	
+import java.io.*;
+import jade.core.*;
+import jade.core.behaviours.*;
+import jade.lang.acl.ACLMessage;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.util.Logger;
 
 	public class agenteEnviador extends Agent{
 	    private byte[] fileContent;
@@ -34,7 +41,9 @@
 
 	public void action(){
 	    // Colocar aqui lo de buscar el archivo this.fileName
-	    try {
+	  ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+			  
+	  try {
 		FileInputStream fstream = new FileInputStream(fileName);
 		DataInputStream in = new DataInputStream(fstream);
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
