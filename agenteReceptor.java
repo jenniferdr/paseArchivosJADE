@@ -58,6 +58,7 @@ public class agenteReceptor extends Agent {
 	public void action() {
 	    ACLMessage  msg = myAgent.receive();
 	    if(msg != null){
+		String copyFile= "";		
 		ACLMessage reply = msg.createReply();
 		//ACLMessage reply = msg.createReply();
 		String content = msg.getContent();
@@ -77,7 +78,8 @@ public class agenteReceptor extends Agent {
 			System.out.println("cree archivo ");
 		    }
 		    FileOutputStream out = new FileOutputStream(f);
-		    out.write(fileContent);
+			copyFile = new String(fileContent);		    
+			out.write(copyFile);
 		}catch(Exception e ){
 		    System.out.println("error");
 		}
