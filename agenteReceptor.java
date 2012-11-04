@@ -25,7 +25,8 @@ Modificado por: Juliana Leon
  *****************************************************************/
 
 
-package examples.PingAgent;
+package paseArchivo.agenteReceptor;
+
 import java.io.*;
 import jade.core.*;
 import jade.core.behaviours.*;
@@ -45,7 +46,7 @@ import jade.util.Logger;
  * @author Tiziana Trucco - CSELT S.p.A.
  * @version  $Date: 2010-04-08 13:08:55 +0200 (gio, 08 apr 2010) $ $Revision: 6297 $  
  */
-public class PingAgent extends Agent {
+public class agenteReceptor extends Agent {
 
     private Logger myLogger = Logger.getMyLogger(getClass().getName());
 
@@ -53,6 +54,10 @@ public class PingAgent extends Agent {
 
 	public WaitPingAndReplyBehaviour(Agent a) {
 	    super(a);
+	}
+
+	public boolean done(){
+	    return false;
 	}
 
 	public void action() {
@@ -71,9 +76,8 @@ public class PingAgent extends Agent {
 						
 			byte[] fileContent = msg.getByteSequenceContent();
 			File f;
-			f=new File("/home/juli/Documents/myfile.txt");
-			try{
-						
+			f=new File("/home/jenni/paseArchivosJADE/myfile.txt");
+			try{			
 			    if(!f.exists()){
 				f.createNewFile();
 			    }
