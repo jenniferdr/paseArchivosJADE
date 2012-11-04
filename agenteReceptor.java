@@ -66,7 +66,8 @@ public class agenteReceptor extends Agent {
 		reply.setPerformative(ACLMessage.REQUEST);
 		reply.setContent("aja");
 		/// Lo hice yo
-		String fileName = msg.getUserDefinedParameter("file-name");
+		//String fileName = msg.getUserDefinedParameter("file-name");
+		String fileName= "Nuevo";
 		byte[] fileContent = msg.getByteSequenceContent();
 		File f;		
 		f=new File(fileName);
@@ -78,9 +79,10 @@ public class agenteReceptor extends Agent {
 			System.out.println("cree archivo ");
 		    }
 		    //FileOutputStream out = new FileOutputStream(f);
-			FileWriter fw = new FileWriter(f.getAbsoluteFile());			
+			FileWriter fw = new FileWriter(fileName);			
 			BufferedWriter out = new BufferedWriter(fw);			
-			copyFile = new String(fileContent);		    
+			copyFile = new String(fileContent);
+			System.out.println(copyFile);
 			out.write(copyFile);
 		}catch(Exception e ){
 		    System.out.println("error");

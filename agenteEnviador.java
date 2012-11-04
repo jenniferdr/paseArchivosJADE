@@ -14,10 +14,9 @@ import jade.util.Logger;
 
 public class agenteEnviador extends Agent{
 
-    private byte[] fileContent;
     private String fileName;
     private Logger Log = Logger.getMyLogger(getClass().getName());
-    
+    private byte[] fileContent;
 
     protected void setup(){
 	    
@@ -46,6 +45,8 @@ public class agenteEnviador extends Agent{
 	}
 
 	public void action(){
+
+	    StringBuffer strContent = new StringBuffer(""); 
 	    
 	    // Cargar el contenido del archivo en el buffer strContent
 	    try {
@@ -53,9 +54,8 @@ public class agenteEnviador extends Agent{
 		DataInputStream in = new DataInputStream(fstream);
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		String str;
-		StringBuffer strContent = new StringBuffer(""); 
 		while ((str = br.readLine()) != null) {
-		    fileContent = str.getBytes("UTF-16LE");
+		    //fileContent = str.getBytes("UTF-16LE");
 		    strContent.append(str);	     
 		    //System.out.println(str);
 		}
@@ -86,7 +86,7 @@ public class agenteEnviador extends Agent{
 	    // Crear el mensaje para enviarlo a los agentes registrados
 	    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 
-	    msg.setByteSequenceContent(fileContent);
+	    msg.setByteSequenceContent((strContent.toString()).getBytes());
 	    msg.addUserDefinedParameter("file-name", fileName);
 	    for(int i=0; i< receiverAgents.length ;i++){
 		msg.addReceiver(receiverAgents[i]);
