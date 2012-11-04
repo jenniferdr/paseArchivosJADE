@@ -19,14 +19,9 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the
 Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
-
-Modificado por: Juliana Leon
-                Jennifer Dos Reis 
  *****************************************************************/
 
-
-package paseArchivo.agenteReceptor;
-
+package examples.PingAgent;
 import java.io.*;
 import jade.core.*;
 import jade.core.behaviours.*;
@@ -48,85 +43,70 @@ import jade.util.Logger;
  */
 public class agenteReceptor extends Agent {
 
-    private Logger myLogger = Logger.getMyLogger(getClass().getName());
+	private Logger myLogger = Logger.getMyLogger(getClass().getName());
 
-    private class WaitPingAndReplyBehaviour extends Behaviour {
+	private class ReciveFile extends Behaviour {
 
-	public WaitPingAndReplyBehaviour(Agent a) {
-	    super(a);
-	}
+		public ReciveFile(Agent a) {
+			super(a);
+		}
+		
+		public boolean done(){
+		    return true;
+		}
 
-	public boolean done(){
-	    return false;
-	}
-
-	public void action() {
-	    ACLMessage  msg = myAgent.receive();
-	    if(msg != null){
-		ACLMessage reply = msg.createReply();
-				
-		if(msg.getPerformative()== ACLMessage.REQUEST){
-		    String content = msg.getContent();
-		    if ((content != null) && (content.indexOf("send") != -1)){
-			myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Received Send Request from "+msg.getSender().getLocalName());
-			reply.setPerformative(ACLMessage.INFORM);
-			reply.setContent("aja");
-			/// Lo hice yo
-			//String fileName = msg.getUserDefinedParameter("file-name");
+		public void action() {
+			ACLMessage  msg = myAgent.receive();
+			if(msg != null){
+				ACLMessage reply = msg.createReply();
+//				ACLMessage reply = msg.createReply();
+				String content = msg.getContent();
+				myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Received Send Request from "+msg.getSender().getLocalName());
+				reply.setPerformative(ACLMessage.REQUEST);
+				reply.setContent("aja");
+				/// Lo hice yo
+				String fileName = msg.getUserDefinedParameter("file-name");
+				byte[] fileContent = msg.getByteSequenceContent();
+				File f;		
+				f=new File(fileName);
+				try{	
+						System.out.println("cree archivo ");
+	
+  					if(!f.exists()){
+  						f.createNewFile();
+						System.out.println("cree archivo ");
+					}
+				FileOutputStream out = new FileOutputStream(f);
+		 		out.write(fileContent);
+				}catch(Exception e ){
+					System.out.println("error");
+				}
 						
-			byte[] fileContent = msg.getByteSequenceContent();
-			File f;
-			f=new File("/home/jenni/paseArchivosJADE/myfile.txt");
-			try{			
-			    if(!f.exists()){
-				f.createNewFile();
-			    }
-			    FileOutputStream out = new FileOutputStream(f);
-			    out.write(fileContent);
-						
-			}catch(Exception e ){
-			    System.out.println("error");
 			}
-						
-		    }
-		    else{
-			myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Unexpected request ["+content+"] received from "+msg.getSender().getLocalName());
-			reply.setPerformative(ACLMessage.REFUSE);
-			reply.setContent("( UnexpectedContent ("+content+"))");
-		    }
-
+				
+			else {
+				block();
+			}
 		}
-		else {
-		    myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Unexpected message ["+ACLMessage.getPerformative(msg.getPerformative())+"] received from "+msg.getSender().getLocalName());
-		    reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-		    reply.setContent("( (Unexpected-act "+ACLMessage.getPerformative(msg.getPerformative())+") )");   
+	} // END of inner class WaitPingAndReplyBehaviour
+	
+	protected void setup() {
+		// Registration with the DF 
+		DFAgentDescription dfd = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();   
+		sd.setType("PingAgent"); 
+		sd.setName(getName());
+		sd.setOwnership("TILAB");
+		dfd.setName(getAID());
+		dfd.addServices(sd);
+		try {
+			DFService.register(this,dfd);
+			ReciveFile PingBehaviour = new  ReciveFile(this);
+			addBehaviour(PingBehaviour);
+		} catch (FIPAException e) {
+			myLogger.log(Logger.SEVERE, "Agent "+getLocalName()+" - Cannot register with DF", e);
+			doDelete();
 		}
-		send(reply);
-	    }
-	    else {
-		block();
-	    }
 	}
-    } // END of inner class WaitPingAndReplyBehaviour
-
-
-    protected void setup() {
-	// Registration with the DF 
-	DFAgentDescription dfd = new DFAgentDescription();
-	ServiceDescription sd = new ServiceDescription();   
-	sd.setType("PingAgent"); 
-	sd.setName(getName());
-	sd.setOwnership("TILAB");
-	dfd.setName(getAID());
-	dfd.addServices(sd);
-	try {
-	    DFService.register(this,dfd);
-	    WaitPingAndReplyBehaviour PingBehaviour = new  WaitPingAndReplyBehaviour(this);
-	    addBehaviour(PingBehaviour);
-	} catch (FIPAException e) {
-	    myLogger.log(Logger.SEVERE, "Agent "+getLocalName()+" - Cannot register with DF", e);
-	    doDelete();
-	}
-    }
 }
 
