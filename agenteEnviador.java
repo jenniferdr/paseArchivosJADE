@@ -37,9 +37,26 @@ public class agenteEnviador extends Agent{
 
 	public void action(){
 	    // Colocar aqui lo de buscar el archivo this.fileName
-	    // Y mandarle el mansaje a ?? Quien. Ver en ejemplo
-	}
 
-    }
+	    // Buscar un agente disponible a quien enviar el contenido
+	    DFAgentDescription temp = new DFAgentDescription();
+	    ServiceDescription sd = new ServiceDescription();
+	    sd.setType("agenteReceptor");
+	    template.addServices(sd);
+	    try {
+		DFAgentDescription[] result = DFService.search(myAgent, temp);
+		// Guardar los nombres de los agentes
+		AID receiverAgents[]= new AID[result.length];
+		for (int i = 0; i < result.length; ++i) {
+		    receiverAgents[i] = result[i].getName();
+		}
+	    }catch(FIPAException fe){
+		fe.printStackTrace();
+	    }
+
+	    
+	}// fin de metodo action
+	
+    }// FIN de clase privada SendFileBehaviour 
 
 }
