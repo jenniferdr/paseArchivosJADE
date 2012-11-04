@@ -16,31 +16,12 @@ public class agenteEnviador extends Agent{
 	Object[] args= getArguments();
 	if(args!=null && args.length>0){
 	    this.fileName= (String) args[0];
-	    
-	    //addBehaviour(new SendFileBehaviour(this));
+	    addBehaviour(new SendFileBehaviour(this));
 	    System.out.println(fileName);
 	}else{
 	    System.out.println("No se especifico el nombre del archivo");
 	    doDelete();
 	} 
-		
-		try {
-	      FileInputStream fstream = new FileInputStream(fileName);
-	      DataInputStream in = new DataInputStream(fstream);
-	      BufferedReader br = new BufferedReader(new InputStreamReader(in));
-	      String str;
-	      StringBuffer strContent = new StringBuffer(""); 
-		while ((str = br.readLine()) != null) {
-		fileContent = str.getBytes("UTF-16LE");
-		strContent.append(str);	     
-		   System.out.println(str);
-	      }
-	      in.close();
-	    } catch (Exception e) {
-	      System.err.println(e);
-	    }
-			
-	  }
     }
     private class SendFileBehaviour extends Behaviour{
 	
@@ -54,6 +35,21 @@ public class agenteEnviador extends Agent{
 
 	public void action(){
 	    // Colocar aqui lo de buscar el archivo this.fileName
+	    try {
+		FileInputStream fstream = new FileInputStream(fileName);
+		DataInputStream in = new DataInputStream(fstream);
+		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		String str;
+		StringBuffer strContent = new StringBuffer(""); 
+		while ((str = br.readLine()) != null) {
+		    fileContent = str.getBytes("UTF-16LE");
+		    strContent.append(str);	     
+		    System.out.println(str);
+		}
+		in.close();
+	    } catch (Exception e) {
+		System.err.println(e);
+	    }
 
 	    // Buscar un agente disponible a quien enviar el contenido
 	    DFAgentDescription temp = new DFAgentDescription();
@@ -70,9 +66,9 @@ public class agenteEnviador extends Agent{
 	    }catch(FIPAException fe){
 		fe.printStackTrace();
 	    }
-		msg.setByteSequenceContent(fileContent);
-		msg.addUserDefinedParameter("file-name", fileName);
-		send(msg);
+	    msg.setByteSequenceContent(fileContent);
+	    msg.addUserDefinedParameter("file-name", fileName);
+	    send(msg);
 	    
 	}// fin de metodo action
 	
