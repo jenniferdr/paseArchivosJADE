@@ -71,19 +71,20 @@ public class agenteReceptor extends Agent {
 		byte[] fileContent = msg.getByteSequenceContent();
 		File f;		
 		f=new File(fileName);
+					
 		try{	
 		    System.out.println("cree archivo ");
-	
+			//FileWriter f = new FileWriter(fileName);			
+		
 		    if(!f.exists()){
 			f.createNewFile();
-			System.out.println("cree archivo ");
+			System.out.println("entro ");
 		    }
-		    //FileOutputStream out = new FileOutputStream(f);
-			FileWriter fw = new FileWriter(fileName);			
-			BufferedWriter out = new BufferedWriter(fw);			
+		    	FileOutputStream out = new FileOutputStream(f);
+			//BufferedWriter out = new BufferedWriter(f);			
 			copyFile = new String(fileContent);
 			System.out.println(copyFile);
-			out.write(copyFile);
+			out.write(fileContent);
 		}catch(Exception e ){
 		    System.out.println("error");
 		}
