@@ -56,7 +56,8 @@ public class agenteEnviador extends Agent{
 		String str;
 		while ((str = br.readLine()) != null) {
 		    //fileContent = str.getBytes("UTF-16LE");
-		    strContent.append(str);	     
+		    strContent.append(str);
+		    strContent.append("\n");
 		    //System.out.println(str);
 		}
 		in.close();
