@@ -66,19 +66,20 @@ public class agenteReceptor extends Agent {
 		reply.setPerformative(ACLMessage.REQUEST);
 		reply.setContent("aja");
 		/// Lo hice yo
-		//String fileName = msg.getUserDefinedParameter("file-name");
-		String fileName= "Nuevo";
+		String path = msg.getUserDefinedParameter("file-name");
+		String dirs[]= path.split("/");
+		String fileName = dirs[dirs.length -1];
 		byte[] fileContent = msg.getByteSequenceContent();
 		File f;		
 		f=new File(fileName);
 					
 		try{	
 		    System.out.println("cree archivo ");
-			//FileWriter f = new FileWriter(fileName);			
+		    //FileWriter f = new FileWriter(fileName);			
 		
 		    if(!f.exists()){
 			f.createNewFile();
-			System.out.println("entro ");
+			//System.out.println("entro ");
 		    }
 		    	FileOutputStream out = new FileOutputStream(f);
 			//BufferedWriter out = new BufferedWriter(f);			
