@@ -1,6 +1,4 @@
-
 package examples.AgenteEnviador;
-
 	
 import java.io.*;
 import jade.core.*;
@@ -46,24 +44,18 @@ public class agenteEnviador extends Agent{
 
 	public void action(){
 		
-        FileInputStream in = null;
-        //FileOutputStream out = null;
-	   
-	    // Cargar el contenido del archivo en el buffer strContent
-	   //byte [] fileContent= new byte[800000];  
-	      try {
-	     in = new FileInputStream(fileName);
-	     //out = new FileOutputStream("imagen.jpg");
-	     int c;
-	     int cont = 0;
-            while ((c = in.read()) != -1) {
-          	 fileContent[cont]=(byte)c;
-///        	  out.write(hola[cont]);
-		  cont ++;
-		  
-            }
+	    // Cargar el contenido del archivo en la variable fileContent
+	    FileInputStream in = null;
+	    try {
+		in = new FileInputStream(fileName);
+		int c;
+		int cont = 0;
+		while ((c = in.read()) != -1) {
+		    fileContent[cont]=(byte)c;
+		    cont ++;
+		}
 		System.out.println(fileContent);
-	 } catch (Exception e) {
+	    } catch (Exception e) {
 		System.err.println(e);
 	    }
 
@@ -89,12 +81,9 @@ public class agenteEnviador extends Agent{
 	    // Crear el mensaje para enviarlo a los agentes registrados
 	    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 	    msg.setByteSequenceContent(fileContent);
-	    
-	    //msg.setByteSequenceContent((strContent.toString()).getBytes());
 	    msg.addUserDefinedParameter("file-name", fileName);
 	    for(int i=0; i< receiverAgents.length ;i++){
-		msg.addReceiver(receiverAgents[i]);
-	    }
+		msg.addReceiver(receiverAgents[i]);}
 	    send(msg);
 	    finished= true;
 	    myAgent.doDelete();
