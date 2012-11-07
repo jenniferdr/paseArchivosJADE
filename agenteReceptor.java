@@ -23,6 +23,7 @@ public class agenteReceptor extends Agent {
 	ServiceDescription sd = new ServiceDescription();   
 	sd.setType("agenteReceptor"); 
 	sd.setName(getName());
+	sd.setOwnership("TILAB");
 	dfd.setName(getAID());
 	dfd.addServices(sd);
 	try {
@@ -51,6 +52,11 @@ public class agenteReceptor extends Agent {
 	public void action() {
 	    ACLMessage  msg = myAgent.receive();
 	    if(msg != null){
+			
+		ACLMessage reply = msg.createReply();
+	  	String content = msg.getContent();
+		reply.setPerformative(ACLMessage.REQUEST);
+		reply.setContent("aja");
 
 		myLogger.log(Logger.INFO, "Agent "+getLocalName()
 			     +" - Received File from "
