@@ -1,27 +1,6 @@
-/*****************************************************************
-JADE - Java Agent DEvelopment Framework is a framework to develop 
-multi-agent systems in compliance with the FIPA specifications.
-Copyright (C) 2000 CSELT S.p.A. 
-
-GNU Lesser General Public License
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation, 
-version 2.1 of the License. 
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the
-Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-Boston, MA  02111-1307, USA.
- *****************************************************************/
 
 package examples.PingAgent;
+import static java.nio.file.StandardCopyOption.*;
 import java.io.*;
 import jade.core.*;
 import jade.core.behaviours.*;
@@ -32,15 +11,6 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.util.Logger;
 
-/**
- * This agent implements a simple Ping Agent that registers itself with the DF and 
- * then waits for ACLMessages.
- * If  a REQUEST message is received containing the string "ping" within the content 
- * then it replies with an INFORM message whose content will be the string "pong". 
- * 
- * @author Tiziana Trucco - CSELT S.p.A.
- * @version  $Date: 2010-04-08 13:08:55 +0200 (gio, 08 apr 2010) $ $Revision: 6297 $  
- */
 public class agenteReceptor extends Agent {
 
     private Logger myLogger = Logger.getMyLogger(getClass().getName());
@@ -58,9 +28,7 @@ public class agenteReceptor extends Agent {
 	public void action() {
 	    ACLMessage  msg = myAgent.receive();
 	    if(msg != null){
-		String copyFile= "";		
 		ACLMessage reply = msg.createReply();
-		//ACLMessage reply = msg.createReply();
 		String content = msg.getContent();
 		myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Received Send Request from "+msg.getSender().getLocalName());
 		reply.setPerformative(ACLMessage.REQUEST);
@@ -69,23 +37,23 @@ public class agenteReceptor extends Agent {
 		String path = msg.getUserDefinedParameter("file-name");
 		String dirs[]= path.split("/");
 		String fileName = dirs[dirs.length -1];
+		FileOutputStream out = null;
 		byte[] fileContent = msg.getByteSequenceContent();
-		File f;		
-		f=new File(fileName);
+		//File f;		
+		//f=new File(fileName);
+		//System.out.println(msg.getByteSequenceContent());	
+		/*
+
+
+
+			FALTA HACER PERMISOS Y DIRECTORIOS
+*/	
 					
-		try{	
-		    System.out.println("cree archivo ");
-		    //FileWriter f = new FileWriter(fileName);			
-		
-		    if(!f.exists()){
-			f.createNewFile();
-			//System.out.println("entro ");
-		    }
-		    	FileOutputStream out = new FileOutputStream(f);
-			//BufferedWriter out = new BufferedWriter(f);			
-			copyFile = new String(fileContent);
-			System.out.println(copyFile);
+		try{
+			out = new FileOutputStream(fileName);	
+			int cont=0;
 			out.write(fileContent);
+		  	
 		}catch(Exception e ){
 		    System.out.println("error");
 		}

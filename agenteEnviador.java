@@ -16,7 +16,7 @@ public class agenteEnviador extends Agent{
 
     private String fileName;
     private Logger Log = Logger.getMyLogger(getClass().getName());
-    private byte[] fileContent;
+    private byte[] fileContent = new byte[9000000];
 
     protected void setup(){
 	    
@@ -45,23 +45,25 @@ public class agenteEnviador extends Agent{
 	}
 
 	public void action(){
-
-	    StringBuffer strContent = new StringBuffer(""); 
-	    
+		
+        FileInputStream in = null;
+        //FileOutputStream out = null;
+	   
 	    // Cargar el contenido del archivo en el buffer strContent
-	    try {
-		FileInputStream fstream = new FileInputStream(fileName);
-		DataInputStream in = new DataInputStream(fstream);
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		String str;
-		while ((str = br.readLine()) != null) {
-		    //fileContent = str.getBytes("UTF-16LE");
-		    strContent.append(str);
-		    strContent.append("\n");
-		    //System.out.println(str);
-		}
-		in.close();
-	    } catch (Exception e) {
+	   //byte [] fileContent= new byte[800000];  
+	      try {
+	     in = new FileInputStream(fileName);
+	     //out = new FileOutputStream("imagen.jpg");
+	     int c;
+	     int cont = 0;
+            while ((c = in.read()) != -1) {
+          	 fileContent[cont]=(byte)c;
+///        	  out.write(hola[cont]);
+		  cont ++;
+		  
+            }
+		System.out.println(fileContent);
+	 } catch (Exception e) {
 		System.err.println(e);
 	    }
 
@@ -86,8 +88,9 @@ public class agenteEnviador extends Agent{
 
 	    // Crear el mensaje para enviarlo a los agentes registrados
 	    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-
-	    msg.setByteSequenceContent((strContent.toString()).getBytes());
+	    msg.setByteSequenceContent(fileContent);
+	    
+	    //msg.setByteSequenceContent((strContent.toString()).getBytes());
 	    msg.addUserDefinedParameter("file-name", fileName);
 	    for(int i=0; i< receiverAgents.length ;i++){
 		msg.addReceiver(receiverAgents[i]);
