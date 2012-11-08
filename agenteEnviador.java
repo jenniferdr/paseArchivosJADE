@@ -1,6 +1,4 @@
-
 package examples.AgenteEnviador;
-
 	
 import java.io.*;
 import jade.core.*;
@@ -11,12 +9,13 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.util.Logger;
+import java.util.LinkedList;
 
 public class agenteEnviador extends Agent{
 
     private String fileName;
     private Logger Log = Logger.getMyLogger(getClass().getName());
-    private byte[] fileContent = new byte[9000000];
+   
 
     protected void setup(){
 	    
@@ -46,27 +45,28 @@ public class agenteEnviador extends Agent{
 
 	public void action(){
 		
-        FileInputStream in = null;
-        //FileOutputStream out = null;
-	   
-	    // Cargar el contenido del archivo en el buffer strContent
-	   //byte [] fileContent= new byte[800000];  
-	      try {
-	     in = new FileInputStream(fileName);
-	     //out = new FileOutputStream("imagen.jpg");
-	     int c;
-	     int cont = 0;
-            while ((c = in.read()) != -1) {
-          	 fileContent[cont]=(byte)c;
-///        	  out.write(hola[cont]);
-		  cont ++;
-		  
-            }
-		System.out.println(fileContent);
-	 } catch (Exception e) {
+	    // Cargar el contenido del archivo en la variable fileContent
+	    FileInputStream in = null;
+	    LinkedList<Integer> lista= new LinkedList<Integer>();
+	    try {
+		in = new FileInputStream(fileName);
+		int c;
+		int cont = 0;
+		while ((c = in.read()) != -1) {
+		    lista.add(c);
+		}
+		//System.out.println(fileContent);
+	    } catch (Exception e) {
 		System.err.println(e);
+	    }catch(OutOfMemoryError b){
+		System.out.println("Error: El archivo sobrepasa el limite de tamaño");
+		myAgent.doDelete();
 	    }
-
+	    Object[] fileContent= lista.toArray();
+	    byte[] bytefileContent= new byte[lista.size()];
+	    for(int i=0; i<lista.size(); i++){
+		bytefileContent[i]= (((Integer)fileContent[i]).byteValue());
+	    }
 	    /* Buscar agentes registrados para recibir archivos.
 	       Los ID de los agentes se guardan en receiverAgents */
 	    DFAgentDescription temp = new DFAgentDescription();
@@ -88,13 +88,10 @@ public class agenteEnviador extends Agent{
 
 	    // Crear el mensaje para enviarlo a los agentes registrados
 	    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-	    msg.setByteSequenceContent(fileContent);
-	    
-	    //msg.setByteSequenceContent((strContent.toString()).getBytes());
+	    msg.setByteSequenceContent(bytefileContent);
 	    msg.addUserDefinedParameter("file-name", fileName);
 	    for(int i=0; i< receiverAgents.length ;i++){
-		msg.addReceiver(receiverAgents[i]);
-	    }
+		msg.addReceiver(receiverAgents[i]);}
 	    send(msg);
 	    finished= true;
 	    myAgent.doDelete();
