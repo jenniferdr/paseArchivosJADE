@@ -1,4 +1,4 @@
-package examples.PingAgent;
+package paseArchivos.AgenteReceptor;
 
 import java.io.*;
 import jade.core.*;
@@ -23,7 +23,7 @@ public class agenteReceptor extends Agent {
 	ServiceDescription sd = new ServiceDescription();   
 	sd.setType("agenteReceptor"); 
 	sd.setName(getName());
-	sd.setOwnership("TILAB");
+	sd.setOwnership("JJ");
 	dfd.setName(getAID());
 	dfd.addServices(sd);
 	try {
@@ -50,15 +50,13 @@ public class agenteReceptor extends Agent {
 	}
 
 	public void action() {
+	    /* myAgent es un atributo heredado de la clase Behaviour y referencia
+	       al agente que ha instanciado este behaviour */
 	    ACLMessage  msg = myAgent.receive();
+
 	    if(msg != null){
 			
-		ACLMessage reply = msg.createReply();
-	  	String content = msg.getContent();
-		reply.setPerformative(ACLMessage.REQUEST);
-		reply.setContent("aja");
-
-		myLogger.log(Logger.INFO, "Agent "+getLocalName()
+	       	myLogger.log(Logger.INFO, "Agent "+getLocalName()
 			     +" - Received File from "
 			     +msg.getSender().getLocalName());
 	
@@ -70,11 +68,7 @@ public class agenteReceptor extends Agent {
 		//Obtener el contenido del archivo
 		FileOutputStream out = null;
 		byte[] fileContent = msg.getByteSequenceContent();
-	
-		/*
-			FALTA HACER PERMISOS Y DIRECTORIOS
-		*/
-	
+
 		// Almacenar contenido			
 		try{
 		    out = new FileOutputStream(fileName);	

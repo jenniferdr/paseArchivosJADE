@@ -1,4 +1,4 @@
-package examples.AgenteEnviador;
+package paseArchivos.AgenteEnviador;
 	
 import java.io.*;
 import jade.core.*;
@@ -11,6 +11,9 @@ import jade.domain.FIPAException;
 import jade.util.Logger;
 import java.util.LinkedList;
 
+/*Agente que se instancia para iniciar la transferencia de un archivo 
+cuyo path debe ser pasado como argumento. El agente muere luego de 
+finalizar su accion*/
 public class agenteEnviador extends Agent{
 
     private String fileName;
@@ -45,7 +48,7 @@ public class agenteEnviador extends Agent{
 
 	public void action(){
 		
-	    // Cargar el contenido del archivo en la variable fileContent
+	    // Cargar el contenido del archivo en la variable bytefileContent
 	    FileInputStream in = null;
 	    LinkedList<Integer> lista= new LinkedList<Integer>();
 	    try {
@@ -53,9 +56,9 @@ public class agenteEnviador extends Agent{
 		int c;
 		int cont = 0;
 		while ((c = in.read()) != -1) {
+		    // Leer byte a byte e insertarlos en la lista
 		    lista.add(c);
 		}
-		//System.out.println(fileContent);
 	    } catch (Exception e) {
 		System.err.println(e);
 	    }catch(OutOfMemoryError b){
@@ -67,6 +70,7 @@ public class agenteEnviador extends Agent{
 	    for(int i=0; i<lista.size(); i++){
 		bytefileContent[i]= (((Integer)fileContent[i]).byteValue());
 	    }
+
 	    /* Buscar agentes registrados para recibir archivos.
 	       Los ID de los agentes se guardan en receiverAgents */
 	    DFAgentDescription temp = new DFAgentDescription();
