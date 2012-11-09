@@ -40,11 +40,12 @@ Un ejemplo de como iniciar el container es:
 
 En donde:
 
-     <ip-remota> es la direccion ip del host que contiene el main container
+    <ip-remota> es la direccion ip del host que contiene el main container
+
 
      <agente> es la descripcion del nombre del agente, nombre de la clase y argumentos 
 
- Ejemplo: 'enviador:paseArchivos.AgenteEnviador.agenteEnviador(/home/usuario/file)'
+     Ejemplo: 'enviador:paseArchivos.AgenteEnviador.agenteEnviador(/home/usuario/file)'
 
 Nota que las comillas incluidas son necesarias para la ejecución del comando en el bash
 debido a que los parentesis podrian ser interpretados de otra forma.  
