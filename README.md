@@ -38,10 +38,11 @@ Un ejemplo de como iniciar el container es:
 
     java jade.Boot -container -local-host <ip-local> -host <ip-remota> -agents <agente>
 
-en donde:
- <ip-remota> es la direccion ip del host que contiene el main container
+En donde:
 
- <agente> es la descripcion del nombre del agente, nombre de la clase y argumentos 
+     <ip-remota> es la direccion ip del host que contiene el main container
+
+     <agente> es la descripcion del nombre del agente, nombre de la clase y argumentos 
 
  Ejemplo: 'enviador:paseArchivos.AgenteEnviador.agenteEnviador(/home/usuario/file)'
 
